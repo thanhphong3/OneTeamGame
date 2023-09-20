@@ -206,6 +206,12 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.visometry.visionlib.sdk": {
+      "version": "file:com.visometry.visionlib.sdk@a31d0ad6811b",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,

@@ -1,0 +1,31 @@
+{
+    "displayName": "VisionLib SDK",
+    "name": "com.visometry.visionlib.sdk",
+    "license": "See LICENSE.md file",
+    "author": {
+        "url": "https://visionlib.com/",
+        "name": "Visometry GmbH"
+    },
+    "unity": "2019.4",
+    "version": "2.2.0",
+    "files": [
+        "Plugins*",
+        "Core*",
+        "Editor*",
+        "UI*",
+        "CHANGELOG*",
+        "LICENSE*",
+        "Documentation~*",
+        "package.json.meta"
+    ],
+    "keywords": [
+        "visionlib",
+        "tracking",
+        "ar",
+        "xr",
+        "augmented",
+        "reality",
+        "sdk"
+    ],
+    "description": "Provides VisionLib SDK integration for use with Unity's multi-platform XR API. VisionLib is a multi-platform library for enterprise augmented reality applications. The SDK comprises multiple computer vision tracking methods around VisionLib's enhanced model tracking, which enables painless 3D object tracking for high end augmented reality applications."
+}

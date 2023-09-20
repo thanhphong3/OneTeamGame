@@ -1,0 +1,24 @@
+{
+    "name": "VisionLib.UI",
+    "references": [
+        "GUID:c3ec89098cff0a74eacc523b3879d466",
+        "GUID:7577ae733e09c16448ab425565adbebc"
+    ],
+    "includePlatforms": [
+        "Android",
+        "Editor",
+        "iOS",
+        "macOSStandalone",
+        "WSA",
+        "WindowsStandalone32",
+        "WindowsStandalone64"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
