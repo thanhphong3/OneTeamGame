@@ -110,7 +110,7 @@ public class Controller : MonoBehaviour
     {
         Debug.Log(path);
         var paths = path.Split('/');
-        GetComponent<PlaceBrick>().SetPrefab(int.Parse(paths[1]), int.Parse(paths[2]));
+        //GetComponent<PlaceBrick>().SetPrefab(int.Parse(paths[1]), int.Parse(paths[2]));
         SetMode(ControllerMode.Build);
     }
 

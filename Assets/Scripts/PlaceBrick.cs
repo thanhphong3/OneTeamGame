@@ -4,40 +4,70 @@ using UnityEngine;
 
 public class PlaceBrick : MonoBehaviour
 {
-    public Transform MousePos;
-    public Brick[] BrickLib;
-    public Material[] MatLib;
-    protected Brick PrefabBrick;
-    public Material TransparentMat;
-    protected Material BrickMat;
-    protected Brick CurrentBrick;
-    protected bool PositionOk;
-
-
-
-    // Start is called before the first frame update
-    void Start()
+    public enum ePlaceBrickState
     {
-        PrefabBrick = BrickLib[0];
-        BrickMat = MatLib[0];
+        FIND,
+        HOLD,
+        FIX,
+    }
+    public ePlaceBrickState placeBrickState;
+    [SerializeField] GameObject PrefabBrick;
+
+    private Brick CurrentBrick;
+    private bool PositionOk;
+
+
+    private void SetState(ePlaceBrickState state)
+    {
+        placeBrickState = state;
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (placeBrickState == ePlaceBrickState.FIND)
+        {
+            if (other.CompareTag("Brick"))
+            {
+                Brick brick = other.GetComponent<Brick>();
+                if (brick.BrickState == Brick.eBrickState.IDLE)
+                {
+                    SetState(ePlaceBrickState.HOLD);
+                    SetNextBrick(brick);
+                }
+            }
+        }
+    }
+    void OnTriggerExit(Collider other)
+    {
+        if (placeBrickState == ePlaceBrickState.FIX)
+        {
+            if (other.CompareTag("Brick"))
+            {
+                SetState(ePlaceBrickState.FIND);
+            }
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (CurrentBrick == null)
-            SetNextBrick();
-
-        if (CurrentBrick != null)
+        if (placeBrickState == ePlaceBrickState.FIND)
         {
-            var position = LegoLogic.SnapToGrid(MousePos.transform.position);
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
+            {
+                SpawnBrick();
+            }
+        }
+        else if (placeBrickState == ePlaceBrickState.HOLD)
+        {
+            var position = LegoLogic.SnapToGrid(transform.position);
 
             //try to find a collision free position
             var placePosition = position;
             PositionOk = false;
-            for (int i = 0; i < 1000; i++)
+            while (!PositionOk)
             {
-                var collider = Physics.OverlapBox(placePosition + CurrentBrick.transform.rotation * CurrentBrick.Collider.center, CurrentBrick.Collider.size / 2, CurrentBrick.transform.rotation, LegoLogic.LayerMaskLego);
+                var collider = Physics.OverlapBox(placePosition + CurrentBrick.transform.rotation * CurrentBrick.brickCol.center, CurrentBrick.brickCol.size / 2, CurrentBrick.transform.rotation, LegoLogic.LayerMaskLego);
                 PositionOk = collider.Length == 0;
                 if (PositionOk)
                     break;
@@ -50,18 +80,16 @@ public class PlaceBrick : MonoBehaviour
             else
                 CurrentBrick.transform.position = position;
 
+            //Place the brick
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
+            {
+                CurrentBrick.SetState(Brick.eBrickState.IDLE);
+                SetState(ePlaceBrickState.FIX);
+                CurrentBrick = null;
+            }
         }
 
-        //Place the brick
-        if (Input.GetKeyDown(KeyCode.Space) && CurrentBrick != null && PositionOk)
-        {
-            CurrentBrick.Collider.enabled = true;
-            CurrentBrick.SetMaterial(BrickMat);
-            var rot = CurrentBrick.transform.rotation;
-            CurrentBrick = null;
-            SetNextBrick();
-            CurrentBrick.transform.rotation = rot;
-        }
+
 
         //Rotate Brick
         //if (Input.GetKeyDown(KeyCode.E))
@@ -83,16 +111,14 @@ public class PlaceBrick : MonoBehaviour
 
     }
 
-    public void SetNextBrick()
+    public void SetNextBrick(Brick brick)
     {
-        CurrentBrick = Instantiate(PrefabBrick);
-        CurrentBrick.Collider.enabled = false;
-        CurrentBrick.SetMaterial(TransparentMat);
+        CurrentBrick = brick;
+        CurrentBrick.SetState(Brick.eBrickState.HOLD);
     }
-
-    public void SetPrefab(int brick, int mat)
+    public void SpawnBrick()
     {
-        PrefabBrick = BrickLib[brick];
-        BrickMat = MatLib[mat];
+        float rotationY = Random.Range(0, 2) == 0 ? 0 : 90;
+        GameObject brick = Instantiate(PrefabBrick, transform.position, Quaternion.Euler(0, rotationY, 0));
     }
 }
